@@ -1,0 +1,21 @@
+name = "mvp-backend"
+main = "src/index.ts"
+compatibility_date = "2024-01-01"
+
+# إعدادات قاعدة بيانات KV
+[[kv_namespaces]]
+binding = "USERS_KV"
+id = "YOUR_KV_NAMESPACE_ID" # يجب استبداله بعد إنشاء الـ KV من لوحة تحكم Cloudflare
+
+# إعدادات Durable Objects للاتصال الحي
+[[durable_objects.bindings]]
+name = "CHAT_ROOM"
+class_name = "ChatRoom"
+
+[[migrations]]
+tag = "v1"
+new_classes = ["ChatRoom"]
+
+# المتغيرات البيئية (اختياري)
+[vars]
+JWT_SECRET = "your-very-secure-secret-key"
