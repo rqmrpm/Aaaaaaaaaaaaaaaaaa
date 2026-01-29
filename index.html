@@ -48,6 +48,21 @@
                     </button>
                 </div>
             </div>
+
+            <div class="input-container">
+                <input type="text" id="walletInput" placeholder="عنوان محفظتك (Wallet Address)" maxlength="100">
+            </div>
+
+            <div class="input-container">
+                <select id="networkSelect" class="network-select">
+                    <option value="">اختر نوع الشبكة</option>
+                    <option value="ethereum">Ethereum</option>
+                    <option value="bsc">Binance Smart Chain</option>
+                    <option value="polygon">Polygon</option>
+                    <option value="tron">TRON</option>
+                    <option value="solana">Solana</option>
+                </select>
+            </div>
             
             <button id="startBtn" class="primary-btn pulse-btn" disabled>
                 ابدأ المغامرة
@@ -419,6 +434,23 @@
                     <div class="modal-text small">الحد الأدنى: 500 كوكيز</div>
                 </div>
                 <button class="modal-btn" onclick="submitExchangeRequest()">طلب التبديل</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
+
+    <!-- Modal لدردشة المدير -->
+    <div id="adminChatModal" class="modal">
+        <div class="modal-content admin-chat-modal">
+            <div class="modal-header">
+                <h2>إدارة المحادثة</h2>
+                <button class="modal-close" onclick="closeModal('adminChatModal')">×</button>
+            </div>
+            <div class="modal-body">
+                <div id="adminChatContent"></div>
             </div>
         </div>
     </div>
