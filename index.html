@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>تطبيق المكالمات العشوائية</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- صفحة الدخول -->
+    <div id="loginPage" class="page active">
+        <div class="login-container">
+            <div class="logo-container">
+                <div class="logo-pulse">
+                    <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="40" cy="40" r="38" stroke="url(#gradient1)" stroke-width="4"/>
+                        <path d="M40 20C48.8366 20 56 27.1634 56 36C56 44.8366 48.8366 52 40 52C31.1634 52 24 44.8366 24 36C24 27.1634 31.1634 20 40 20Z" fill="url(#gradient2)"/>
+                        <defs>
+                            <linearGradient id="gradient1" x1="0" y1="0" x2="80" y2="80">
+                                <stop offset="0%" stop-color="#FF6B9D"/>
+                                <stop offset="100%" stop-color="#C44569"/>
+                            </linearGradient>
+                            <linearGradient id="gradient2" x1="24" y1="20" x2="56" y2="52">
+                                <stop offset="0%" stop-color="#FFA07A"/>
+                                <stop offset="100%" stop-color="#FF6347"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+            </div>
+            <h1 class="app-title">مرحباً بك!</h1>
+            <p class="app-subtitle">ابدأ مغامرتك الآن واكتشف أشخاصاً جدد</p>
+            
+            <div class="input-container">
+                <input type="text" id="usernameInput" placeholder="اختر اسماً مستعاراً" maxlength="20">
+                <div class="input-underline"></div>
+            </div>
+            
+            <div class="gender-selection">
+                <p class="gender-label">أنا...</p>
+                <div class="gender-buttons">
+                    <button class="gender-btn" data-gender="male">
+                        <span class="gender-icon">👨</span>
+                        <span>ذكر</span>
+                    </button>
+                    <button class="gender-btn" data-gender="female">
+                        <span class="gender-icon">👩</span>
+                        <span>أنثى</span>
+                    </button>
+                </div>
+            </div>
+            
+            <button id="startBtn" class="primary-btn pulse-btn" disabled>
+                <span>ابدأ المغامرة</span>
+                <span class="btn-glow"></span>
+            </button>
+            
+            <div class="terms">
+                <label class="checkbox-container">
+                    <input type="checkbox" id="termsCheckbox">
+                    <span class="checkmark"></span>
+                    <span class="terms-text">أوافق على <a href="#" class="terms-link">سياسة الخصوصية</a></span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <!-- الواجهة الرئيسية -->
+    <div id="homePage" class="page">
+        <div class="home-container">
+            <header class="app-header">
+                <div class="user-info">
+                    <div class="user-avatar">
+                        <span id="userAvatarText">U</span>
+                    </div>
+                    <div class="user-details">
+                        <span id="userName" class="user-name">مستخدم</span>
+                        <span class="user-status online">متصل</span>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <div class="coins-display" onclick="navigateTo('wallet')">
+                        <span class="coin-icon">💰</span>
+                        <span id="userCoins" class="coin-amount">100</span>
+                    </div>
+                </div>
+            </header>
+
+            <div class="main-content">
+                <div class="stats-bar">
+                    <div class="stat-item">
+                        <span class="stat-icon">👥</span>
+                        <span class="stat-value" id="onlineUsers">1,247</span>
+                        <span class="stat-label">متصل الآن</span>
+                    </div>
+                </div>
+
+                <div class="search-section">
+                    <button id="searchBtn" class="search-btn">
+                        <span class="search-icon">🎯</span>
+                        <span class="search-text">ابدأ البحث</span>
+                        <div class="search-ripple"></div>
+                    </button>
+                </div>
+
+                <div class="live-streams-section">
+                    <div class="section-header">
+                        <h2 class="section-title">البثوث المباشرة 🔴</h2>
+                        <span class="live-count">12 بث نشط</span>
+                    </div>
+                    <div class="streams-grid" id="streamsGrid">
+                        <!-- سيتم ملؤها ديناميكياً -->
+                    </div>
+                </div>
+            </div>
+
+            <nav class="bottom-nav">
+                <button class="nav-btn active" data-page="home">
+                    <span class="nav-icon">🏠</span>
+                    <span class="nav-label">الرئيسية</span>
+                </button>
+                <button class="nav-btn" data-page="contacts">
+                    <span class="nav-icon">👥</span>
+                    <span class="nav-label">جهات الاتصال</span>
+                </button>
+                <button class="nav-btn" data-page="wallet">
+                    <span class="nav-icon">💳</span>
+                    <span class="nav-label">المحفظة</span>
+                </button>
+                <button class="nav-btn" data-page="profile">
+                    <span class="nav-icon">👤</span>
+                    <span class="nav-label">الملف الشخصي</span>
+                </button>
+            </nav>
+        </div>
+    </div>
+
+    <!-- صفحة المكالمة -->
+    <div id="callPage" class="page">
+        <div class="call-container">
+            <div class="video-container">
+                <div class="remote-video">
+                    <div class="video-placeholder">
+                        <div class="searching-animation">
+                            <div class="search-pulse"></div>
+                            <span class="search-text">جاري البحث عن شريك...</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="local-video">
+                    <div class="video-placeholder-small">
+                        <span>أنت</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="call-controls">
+                <button class="control-btn gift-btn">
+                    <span class="control-icon">🎁</span>
+                    <span class="control-label">هدية</span>
+                </button>
+                <button class="control-btn next-btn" id="nextBtn">
+                    <span class="control-icon">⏭️</span>
+                    <span class="control-label">التالي</span>
+                </button>
+                <button class="control-btn add-btn">
+                    <span class="control-icon">➕</span>
+                    <span class="control-label">إضافة</span>
+                </button>
+                <button class="control-btn end-btn" id="endCallBtn">
+                    <span class="control-icon">❌</span>
+                    <span class="control-label">إنهاء</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- صفحة المحفظة -->
+    <div id="walletPage" class="page">
+        <div class="wallet-container">
+            <header class="page-header">
+                <button class="back-btn" onclick="navigateTo('home')">
+                    <span>←</span>
+                </button>
+                <h1 class="page-title">المحفظة</h1>
+                <div></div>
+            </header>
+
+            <div class="balance-card">
+                <div class="balance-label">رصيدك الحالي</div>
+                <div class="balance-amount">
+                    <span class="coin-icon-large">💰</span>
+                    <span id="walletBalance">100</span>
+                    <span class="balance-currency">كوينز</span>
+                </div>
+            </div>
+
+            <div class="wallet-actions">
+                <button class="wallet-btn charge-btn" onclick="showChargeModal()">
+                    <span class="wallet-btn-icon">⚡</span>
+                    <span class="wallet-btn-text">شحن الرصيد</span>
+                </button>
+                <button class="wallet-btn withdraw-btn" onclick="showWithdrawModal()">
+                    <span class="wallet-btn-icon">💸</span>
+                    <span class="wallet-btn-text">سحب الأرباح</span>
+                </button>
+            </div>
+
+            <div class="transactions-section">
+                <h2 class="section-title">آخر العمليات</h2>
+                <div class="transactions-list">
+                    <div class="transaction-item">
+                        <div class="transaction-icon receive">📥</div>
+                        <div class="transaction-details">
+                            <div class="transaction-title">استلام هدية</div>
+                            <div class="transaction-date">منذ ساعتين</div>
+                        </div>
+                        <div class="transaction-amount positive">+50</div>
+                    </div>
+                    <div class="transaction-item">
+                        <div class="transaction-icon send">📤</div>
+                        <div class="transaction-details">
+                            <div class="transaction-title">إرسال هدية</div>
+                            <div class="transaction-date">منذ 5 ساعات</div>
+                        </div>
+                        <div class="transaction-amount negative">-30</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- صفحة جهات الاتصال -->
+    <div id="contactsPage" class="page">
+        <div class="contacts-container">
+            <header class="page-header">
+                <button class="back-btn" onclick="navigateTo('home')">
+                    <span>←</span>
+                </button>
+                <h1 class="page-title">جهات الاتصال</h1>
+                <div></div>
+            </header>
+
+            <div class="search-bar">
+                <input type="text" placeholder="ابحث بالـ ID..." id="searchIdInput">
+                <button class="search-id-btn">🔍</button>
+            </div>
+
+            <div class="contacts-list" id="contactsList">
+                <div class="empty-state">
+                    <span class="empty-icon">👥</span>
+                    <p class="empty-text">لا توجد جهات اتصال محفوظة</p>
+                    <p class="empty-subtext">ابدأ بالبحث والتعرف على أشخاص جدد!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- صفحة الملف الشخصي -->
+    <div id="profilePage" class="page">
+        <div class="profile-container">
+            <header class="page-header">
+                <button class="back-btn" onclick="navigateTo('home')">
+                    <span>←</span>
+                </button>
+                <h1 class="page-title">الملف الشخصي</h1>
+                <div></div>
+            </header>
+
+            <div class="profile-card">
+                <div class="profile-avatar-large">
+                    <span id="profileAvatarText">U</span>
+                </div>
+                <h2 id="profileName" class="profile-name">مستخدم</h2>
+                <div class="profile-id">
+                    <span class="id-label">ID:</span>
+                    <span id="profileId" class="id-value">123456789</span>
+                    <button class="copy-btn" onclick="copyId()">📋</button>
+                </div>
+            </div>
+
+            <div class="profile-stats">
+                <div class="stat-card">
+                    <div class="stat-card-value">0</div>
+                    <div class="stat-card-label">جهات الاتصال</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-value">0</div>
+                    <div class="stat-card-label">المكالمات</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-value">0</div>
+                    <div class="stat-card-label">الهدايا</div>
+                </div>
+            </div>
+
+            <div class="profile-actions">
+                <button class="profile-action-btn">
+                    <span>⚙️</span>
+                    <span>الإعدادات</span>
+                </button>
+                <button class="profile-action-btn">
+                    <span>🔔</span>
+                    <span>الإشعارات</span>
+                </button>
+                <button class="profile-action-btn">
+                    <span>❓</span>
+                    <span>المساعدة</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal للشحن -->
+    <div id="chargeModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>شحن الرصيد</h2>
+                <button class="modal-close" onclick="closeModal('chargeModal')">×</button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-text">للشحن، يرجى التواصل مع فريق الدعم داخل التطبيق</p>
+                <div class="user-id-display">
+                    <span class="id-label">الـ ID الخاص بك:</span>
+                    <span id="modalUserId" class="id-value">123456789</span>
+                </div>
+                <button class="modal-btn" onclick="navigateTo('support')">التواصل مع الدعم</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal للسحب -->
+    <div id="withdrawModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>سحب الأرباح</h2>
+                <button class="modal-close" onclick="closeModal('withdrawModal')">×</button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-text">الحد الأدنى للسحب: 10,000 كوينز</p>
+                <p class="modal-text small">رسوم التحويل: 5%</p>
+                <input type="number" class="modal-input" placeholder="المبلغ بالكوينز" min="10000">
+                <input type="text" class="modal-input" placeholder="عنوان محفظة USDT (TRC20)">
+                <button class="modal-btn">إرسال الطلب</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
