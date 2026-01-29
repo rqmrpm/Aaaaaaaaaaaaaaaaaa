@@ -33,7 +33,6 @@
             
             <div class="input-container">
                 <input type="text" id="usernameInput" placeholder="اختر اسماً مستعاراً" maxlength="20">
-                <div class="input-underline"></div>
             </div>
             
             <div class="gender-selection">
@@ -51,14 +50,12 @@
             </div>
             
             <button id="startBtn" class="primary-btn pulse-btn" disabled>
-                <span>ابدأ المغامرة</span>
-                <span class="btn-glow"></span>
+                ابدأ المغامرة
             </button>
             
             <div class="terms">
                 <label class="checkbox-container">
                     <input type="checkbox" id="termsCheckbox">
-                    <span class="checkmark"></span>
                     <span class="terms-text">أوافق على <a href="#" class="terms-link">سياسة الخصوصية</a></span>
                 </label>
             </div>
@@ -78,11 +75,9 @@
                         <span class="user-status online">متصل</span>
                     </div>
                 </div>
-                <div class="header-actions">
-                    <div class="coins-display" onclick="navigateTo('wallet')">
-                        <span class="coin-icon">💰</span>
-                        <span id="userCoins" class="coin-amount">100</span>
-                    </div>
+                <div class="coins-display" onclick="navigateTo('wallet')">
+                    <span>💰</span>
+                    <span id="userCoins" class="coin-amount">100</span>
                 </div>
             </header>
 
@@ -99,7 +94,6 @@
                     <button id="searchBtn" class="search-btn">
                         <span class="search-icon">🎯</span>
                         <span class="search-text">ابدأ البحث</span>
-                        <div class="search-ripple"></div>
                     </button>
                 </div>
 
@@ -108,9 +102,7 @@
                         <h2 class="section-title">البثوث المباشرة 🔴</h2>
                         <span class="live-count">12 بث نشط</span>
                     </div>
-                    <div class="streams-grid" id="streamsGrid">
-                        <!-- سيتم ملؤها ديناميكياً -->
-                    </div>
+                    <div class="streams-grid" id="streamsGrid"></div>
                 </div>
             </div>
 
@@ -141,37 +133,55 @@
             <div class="video-container">
                 <div class="remote-video">
                     <div class="video-placeholder">
-                        <div class="searching-animation">
-                            <div class="search-pulse"></div>
-                            <span class="search-text">جاري البحث عن شريك...</span>
+                        <div class="call-info">
+                            <div class="call-avatar" id="callAvatar">👩</div>
+                            <div class="call-name" id="callName">نور</div>
+                            <div class="call-status">متصل الآن</div>
                         </div>
                     </div>
                 </div>
                 <div class="local-video">
-                    <div class="video-placeholder-small">
-                        <span>أنت</span>
-                    </div>
+                    <div class="video-placeholder-small">أنت</div>
                 </div>
             </div>
 
             <div class="call-controls">
-                <button class="control-btn gift-btn">
+                <button class="control-btn gift-btn" onclick="showGiftModal()">
                     <span class="control-icon">🎁</span>
                     <span class="control-label">هدية</span>
                 </button>
-                <button class="control-btn next-btn" id="nextBtn">
+                <button class="control-btn next-btn" onclick="simulateMatching()">
                     <span class="control-icon">⏭️</span>
                     <span class="control-label">التالي</span>
                 </button>
-                <button class="control-btn add-btn">
+                <button class="control-btn add-btn" onclick="addToContacts()">
                     <span class="control-icon">➕</span>
                     <span class="control-label">إضافة</span>
                 </button>
-                <button class="control-btn end-btn" id="endCallBtn">
+                <button class="control-btn end-btn" onclick="navigateTo('home')">
                     <span class="control-icon">❌</span>
                     <span class="control-label">إنهاء</span>
                 </button>
             </div>
+
+            <nav class="bottom-nav">
+                <button class="nav-btn" data-page="home">
+                    <span class="nav-icon">🏠</span>
+                    <span class="nav-label">الرئيسية</span>
+                </button>
+                <button class="nav-btn" data-page="contacts">
+                    <span class="nav-icon">👥</span>
+                    <span class="nav-label">جهات الاتصال</span>
+                </button>
+                <button class="nav-btn" data-page="wallet">
+                    <span class="nav-icon">💳</span>
+                    <span class="nav-label">المحفظة</span>
+                </button>
+                <button class="nav-btn" data-page="profile">
+                    <span class="nav-icon">👤</span>
+                    <span class="nav-label">الملف الشخصي</span>
+                </button>
+            </nav>
         </div>
     </div>
 
@@ -179,11 +189,9 @@
     <div id="walletPage" class="page">
         <div class="wallet-container">
             <header class="page-header">
-                <button class="back-btn" onclick="navigateTo('home')">
-                    <span>←</span>
-                </button>
+                <button class="back-btn" onclick="history.back()">←</button>
                 <h1 class="page-title">المحفظة</h1>
-                <div></div>
+                <div style="width: 40px;"></div>
             </header>
 
             <div class="balance-card">
@@ -191,42 +199,43 @@
                 <div class="balance-amount">
                     <span class="coin-icon-large">💰</span>
                     <span id="walletBalance">100</span>
-                    <span class="balance-currency">كوينز</span>
                 </div>
             </div>
 
             <div class="wallet-actions">
                 <button class="wallet-btn charge-btn" onclick="showChargeModal()">
-                    <span class="wallet-btn-icon">⚡</span>
+                    <span class="wallet-btn-icon">⬆️</span>
                     <span class="wallet-btn-text">شحن الرصيد</span>
                 </button>
                 <button class="wallet-btn withdraw-btn" onclick="showWithdrawModal()">
-                    <span class="wallet-btn-icon">💸</span>
+                    <span class="wallet-btn-icon">⬇️</span>
                     <span class="wallet-btn-text">سحب الأرباح</span>
                 </button>
             </div>
 
             <div class="transactions-section">
-                <h2 class="section-title">آخر العمليات</h2>
-                <div class="transactions-list">
-                    <div class="transaction-item">
-                        <div class="transaction-icon receive">📥</div>
-                        <div class="transaction-details">
-                            <div class="transaction-title">استلام هدية</div>
-                            <div class="transaction-date">منذ ساعتين</div>
-                        </div>
-                        <div class="transaction-amount positive">+50</div>
-                    </div>
-                    <div class="transaction-item">
-                        <div class="transaction-icon send">📤</div>
-                        <div class="transaction-details">
-                            <div class="transaction-title">إرسال هدية</div>
-                            <div class="transaction-date">منذ 5 ساعات</div>
-                        </div>
-                        <div class="transaction-amount negative">-30</div>
-                    </div>
-                </div>
+                <h3 class="section-title">سجل العمليات</h3>
+                <div class="transactions-list" id="transactionsList"></div>
             </div>
+
+            <nav class="bottom-nav">
+                <button class="nav-btn" data-page="home">
+                    <span class="nav-icon">🏠</span>
+                    <span class="nav-label">الرئيسية</span>
+                </button>
+                <button class="nav-btn" data-page="contacts">
+                    <span class="nav-icon">👥</span>
+                    <span class="nav-label">جهات الاتصال</span>
+                </button>
+                <button class="nav-btn active" data-page="wallet">
+                    <span class="nav-icon">💳</span>
+                    <span class="nav-label">المحفظة</span>
+                </button>
+                <button class="nav-btn" data-page="profile">
+                    <span class="nav-icon">👤</span>
+                    <span class="nav-label">الملف الشخصي</span>
+                </button>
+            </nav>
         </div>
     </div>
 
@@ -234,25 +243,36 @@
     <div id="contactsPage" class="page">
         <div class="contacts-container">
             <header class="page-header">
-                <button class="back-btn" onclick="navigateTo('home')">
-                    <span>←</span>
-                </button>
+                <button class="back-btn" onclick="history.back()">←</button>
                 <h1 class="page-title">جهات الاتصال</h1>
-                <div></div>
+                <div style="width: 40px;"></div>
             </header>
 
             <div class="search-bar">
-                <input type="text" placeholder="ابحث بالـ ID..." id="searchIdInput">
-                <button class="search-id-btn">🔍</button>
+                <input type="text" id="searchIdInput" placeholder="ابحث بالـ ID...">
+                <button class="search-id-btn" onclick="searchById()">🔍</button>
             </div>
 
-            <div class="contacts-list" id="contactsList">
-                <div class="empty-state">
-                    <span class="empty-icon">👥</span>
-                    <p class="empty-text">لا توجد جهات اتصال محفوظة</p>
-                    <p class="empty-subtext">ابدأ بالبحث والتعرف على أشخاص جدد!</p>
-                </div>
-            </div>
+            <div id="contactsList" class="transactions-list"></div>
+
+            <nav class="bottom-nav">
+                <button class="nav-btn" data-page="home">
+                    <span class="nav-icon">🏠</span>
+                    <span class="nav-label">الرئيسية</span>
+                </button>
+                <button class="nav-btn active" data-page="contacts">
+                    <span class="nav-icon">👥</span>
+                    <span class="nav-label">جهات الاتصال</span>
+                </button>
+                <button class="nav-btn" data-page="wallet">
+                    <span class="nav-icon">💳</span>
+                    <span class="nav-label">المحفظة</span>
+                </button>
+                <button class="nav-btn" data-page="profile">
+                    <span class="nav-icon">👤</span>
+                    <span class="nav-label">الملف الشخصي</span>
+                </button>
+            </nav>
         </div>
     </div>
 
@@ -260,37 +280,35 @@
     <div id="profilePage" class="page">
         <div class="profile-container">
             <header class="page-header">
-                <button class="back-btn" onclick="navigateTo('home')">
-                    <span>←</span>
-                </button>
+                <button class="back-btn" onclick="history.back()">←</button>
                 <h1 class="page-title">الملف الشخصي</h1>
-                <div></div>
+                <div style="width: 40px;"></div>
             </header>
 
             <div class="profile-card">
                 <div class="profile-avatar-large">
                     <span id="profileAvatarText">U</span>
                 </div>
-                <h2 id="profileName" class="profile-name">مستخدم</h2>
+                <h2 class="profile-name" id="profileName">مستخدم</h2>
                 <div class="profile-id">
-                    <span class="id-label">ID:</span>
-                    <span id="profileId" class="id-value">123456789</span>
+                    <span class="id-label">الـ ID:</span>
+                    <span class="id-value" id="profileId">XXXXX</span>
                     <button class="copy-btn" onclick="copyId()">📋</button>
                 </div>
             </div>
 
             <div class="profile-stats">
                 <div class="stat-card">
-                    <div class="stat-card-value">0</div>
-                    <div class="stat-card-label">جهات الاتصال</div>
+                    <div class="stat-card-value">42</div>
+                    <div class="stat-card-label">مكالمات</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-card-value">0</div>
-                    <div class="stat-card-label">المكالمات</div>
+                    <div class="stat-card-value">15</div>
+                    <div class="stat-card-label">أصدقاء</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-card-value">0</div>
-                    <div class="stat-card-label">الهدايا</div>
+                    <div class="stat-card-value">⭐</div>
+                    <div class="stat-card-label">تقييم</div>
                 </div>
             </div>
 
@@ -304,9 +322,45 @@
                     <span>الإشعارات</span>
                 </button>
                 <button class="profile-action-btn">
-                    <span>❓</span>
-                    <span>المساعدة</span>
+                    <span>📞</span>
+                    <span>فريق الدعم</span>
                 </button>
+                <button class="profile-action-btn" onclick="logout()">
+                    <span>🚪</span>
+                    <span>تسجيل الخروج</span>
+                </button>
+            </div>
+
+            <nav class="bottom-nav">
+                <button class="nav-btn" data-page="home">
+                    <span class="nav-icon">🏠</span>
+                    <span class="nav-label">الرئيسية</span>
+                </button>
+                <button class="nav-btn" data-page="contacts">
+                    <span class="nav-icon">👥</span>
+                    <span class="nav-label">جهات الاتصال</span>
+                </button>
+                <button class="nav-btn" data-page="wallet">
+                    <span class="nav-icon">💳</span>
+                    <span class="nav-label">المحفظة</span>
+                </button>
+                <button class="nav-btn active" data-page="profile">
+                    <span class="nav-icon">👤</span>
+                    <span class="nav-label">الملف الشخصي</span>
+                </button>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Modal للهدايا -->
+    <div id="giftsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>إرسال هدية</h2>
+                <button class="modal-close" onclick="closeModal('giftsModal')">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="gifts-grid" id="giftsGrid"></div>
             </div>
         </div>
     </div>
@@ -319,12 +373,47 @@
                 <button class="modal-close" onclick="closeModal('chargeModal')">×</button>
             </div>
             <div class="modal-body">
-                <p class="modal-text">للشحن، يرجى التواصل مع فريق الدعم داخل التطبيق</p>
+                <div class="modal-text">للشحن، يرجى التواصل مع فريق الدعم داخل التطبيق</div>
+                
                 <div class="user-id-display">
-                    <span class="id-label">الـ ID الخاص بك:</span>
-                    <span id="modalUserId" class="id-value">123456789</span>
+                    <div class="modal-text small">الـ ID الخاص بك:</div>
+                    <div style="font-size: 1.3rem; font-weight: 700;" id="modalUserId">XXXXX</div>
                 </div>
-                <button class="modal-btn" onclick="navigateTo('support')">التواصل مع الدعم</button>
+
+                <div class="modal-text">اختر الباقة المطلوبة:</div>
+                
+                <div class="charge-packages">
+                    <div class="package-card" onclick="selectPackage(100, '$5')">
+                        <button class="package-select-btn">اختر</button>
+                        <div class="package-info">
+                            <div class="package-amount">100 🪙</div>
+                            <div class="package-price">$5</div>
+                        </div>
+                    </div>
+                    <div class="package-card" onclick="selectPackage(250, '$10')">
+                        <button class="package-select-btn">اختر</button>
+                        <div class="package-info">
+                            <div class="package-amount">250 🪙</div>
+                            <div class="package-price">$10</div>
+                        </div>
+                    </div>
+                    <div class="package-card" onclick="selectPackage(500, '$20')">
+                        <button class="package-select-btn">اختر</button>
+                        <div class="package-info">
+                            <div class="package-amount">500 🪙</div>
+                            <div class="package-price">$20</div>
+                        </div>
+                    </div>
+                    <div class="package-card" onclick="selectPackage(1000, '$35')">
+                        <button class="package-select-btn">اختر</button>
+                        <div class="package-info">
+                            <div class="package-amount">1000 🪙</div>
+                            <div class="package-price">$35</div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="modal-btn" onclick="submitChargeRequest()">إرسال الطلب لفريق الدعم</button>
             </div>
         </div>
     </div>
@@ -337,11 +426,10 @@
                 <button class="modal-close" onclick="closeModal('withdrawModal')">×</button>
             </div>
             <div class="modal-body">
-                <p class="modal-text">الحد الأدنى للسحب: 10,000 كوينز</p>
-                <p class="modal-text small">رسوم التحويل: 5%</p>
-                <input type="number" class="modal-input" placeholder="المبلغ بالكوينز" min="10000">
-                <input type="text" class="modal-input" placeholder="عنوان محفظة USDT (TRC20)">
-                <button class="modal-btn">إرسال الطلب</button>
+                <div class="modal-text">أدخل عنوان محفظتك:</div>
+                <input type="text" class="modal-input" placeholder="عنوان المحفظة (Wallet Address)">
+                <div class="modal-text small">الحد الأدنى للسحب: 500 كوينز</div>
+                <button class="modal-btn" onclick="submitWithdrawRequest()">إرسال طلب السحب</button>
             </div>
         </div>
     </div>

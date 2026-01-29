@@ -1,41 +1,88 @@
-// State Management
+// ===== STATE MANAGEMENT =====
 const AppState = {
     user: {
         id: null,
         name: null,
         gender: null,
         balance: 100,
-        contacts: []
+        contacts: [],
+        transactions: []
     },
-    isLoggedIn: false
+    isLoggedIn: false,
+    selectedPackage: null
 };
 
-// Initialize App
+// ===== GIFTS DATABASE =====
+const GIFTS_DATABASE = [
+    { name: 'بصلة', icon: '🧅', price: 1 },
+    { name: 'فلفلة', icon: '🌶️', price: 5 },
+    { name: 'خسة', icon: '🥬', price: 10 },
+    { name: 'بيتنجانة', icon: '🍆', price: 5 },
+    { name: 'وردة', icon: '🌹', price: 10 },
+    { name: 'صحن مجدرة', icon: '🍲', price: 10 },
+    { name: 'حمل حطب', icon: '🪵', price: 50 },
+    { name: 'طاسة مازوة', icon: '🍶', price: 40 },
+    { name: 'سندويشة فلافل', icon: '🥙', price: 50 },
+    { name: 'كوساي', icon: '🍌', price: 5 },
+    { name: 'خيارة', icon: '🥒', price: 3 },
+    { name: 'قلب', icon: '❤️', price: 20 },
+    { name: 'هدية', icon: '🎁', price: 50 },
+    { name: 'تاج', icon: '👑', price: 100 },
+    { name: 'سيارة', icon: '🚗', price: 500 }
+];
+
+// ===== MOCK USERS =====
+const MOCK_USERS = [
+    { name: 'سارة', gender: 'female', avatar: '👩' },
+    { name: 'أحمد', gender: 'male', avatar: '👨' },
+    { name: 'ليلى', gender: 'female', avatar: '👩' },
+    { name: 'محمد', gender: 'male', avatar: '👨' },
+    { name: 'نور', gender: 'female', avatar: '👩' },
+    { name: 'علي', gender: 'male', avatar: '👨' },
+    { name: 'فاطمة', gender: 'female', avatar: '👩' },
+    { name: 'خالد', gender: 'male', avatar: '👨' }
+];
+
+// ===== INITIALIZE APP =====
 document.addEventListener('DOMContentLoaded', () => {
     loadUserData();
+    if (AppState.isLoggedIn) {
+        navigateTo('home');
+        updateUI();
+    }
     initializeLoginPage();
     initializeNavigation();
     initializeLiveStreams();
     initializeCallPage();
+    initializeGiftsModal();
+    initializeTransactions();
+    setupBackButton();
 });
 
-// Load user data from localStorage
+// ===== BACK BUTTON SUPPORT =====
+function setupBackButton() {
+    window.addEventListener('popstate', () => {
+        if (AppState.isLoggedIn) {
+            navigateTo('home');
+        }
+    });
+}
+
+// ===== LOAD USER DATA =====
 function loadUserData() {
     const savedUser = localStorage.getItem('appUser');
     if (savedUser) {
         AppState.user = JSON.parse(savedUser);
         AppState.isLoggedIn = true;
-        navigateTo('home');
-        updateUI();
     }
 }
 
-// Save user data to localStorage
+// ===== SAVE USER DATA =====
 function saveUserData() {
     localStorage.setItem('appUser', JSON.stringify(AppState.user));
 }
 
-// Login Page Logic
+// ===== LOGIN PAGE LOGIC =====
 function initializeLoginPage() {
     const usernameInput = document.getElementById('usernameInput');
     const genderButtons = document.querySelectorAll('.gender-btn');
@@ -44,7 +91,6 @@ function initializeLoginPage() {
 
     let selectedGender = null;
 
-    // Gender selection
     genderButtons.forEach(btn => {
         btn.addEventListener('click', () => {
             genderButtons.forEach(b => b.classList.remove('active'));
@@ -54,7 +100,6 @@ function initializeLoginPage() {
         });
     });
 
-    // Check form validity
     function checkFormValidity() {
         const isValid = usernameInput.value.trim() !== '' && 
                        selectedGender !== null && 
@@ -65,34 +110,30 @@ function initializeLoginPage() {
     usernameInput.addEventListener('input', checkFormValidity);
     termsCheckbox.addEventListener('change', checkFormValidity);
 
-    // Start button
     startBtn.addEventListener('click', () => {
         const username = usernameInput.value.trim();
-        
-        // Generate user ID
         const userId = generateUserId();
         
-        // Save user data
         AppState.user.id = userId;
         AppState.user.name = username;
         AppState.user.gender = selectedGender;
         AppState.user.balance = 100;
+        AppState.user.contacts = [];
+        AppState.user.transactions = [];
         AppState.isLoggedIn = true;
         
         saveUserData();
-        
-        // Navigate to home
         navigateTo('home');
         updateUI();
     });
 }
 
-// Generate random user ID
+// ===== GENERATE USER ID =====
 function generateUserId() {
     return Math.random().toString(36).substr(2, 9).toUpperCase();
 }
 
-// Navigation Logic
+// ===== NAVIGATION LOGIC =====
 function initializeNavigation() {
     const navButtons = document.querySelectorAll('.nav-btn');
     
@@ -101,14 +142,13 @@ function initializeNavigation() {
             const page = btn.dataset.page;
             navigateTo(page);
             
-            // Update active state
             navButtons.forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
         });
     });
 }
 
-// Navigate to page
+// ===== NAVIGATE TO PAGE =====
 function navigateTo(pageName) {
     const pages = document.querySelectorAll('.page');
     pages.forEach(page => page.classList.remove('active'));
@@ -116,49 +156,53 @@ function navigateTo(pageName) {
     const targetPage = document.getElementById(pageName + 'Page');
     if (targetPage) {
         targetPage.classList.add('active');
+        
+        // Update nav buttons
+        const navButtons = document.querySelectorAll('.nav-btn');
+        navButtons.forEach(btn => {
+            if (btn.dataset.page === pageName) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
     }
 }
 
-// Update UI with user data
+// ===== UPDATE UI =====
 function updateUI() {
     if (!AppState.isLoggedIn) return;
     
-    // Update user name
     const userNameElements = document.querySelectorAll('#userName, #profileName');
     userNameElements.forEach(el => {
         el.textContent = AppState.user.name;
     });
     
-    // Update avatar
     const avatarElements = document.querySelectorAll('#userAvatarText, #profileAvatarText');
     avatarElements.forEach(el => {
         el.textContent = AppState.user.name.charAt(0).toUpperCase();
     });
     
-    // Update balance
     const balanceElements = document.querySelectorAll('#userCoins, #walletBalance');
     balanceElements.forEach(el => {
         el.textContent = AppState.user.balance;
     });
     
-    // Update user ID
     const idElements = document.querySelectorAll('#profileId, #modalUserId');
     idElements.forEach(el => {
         el.textContent = AppState.user.id;
     });
     
-    // Update online users (random number)
     const onlineUsers = document.getElementById('onlineUsers');
     if (onlineUsers) {
         onlineUsers.textContent = Math.floor(Math.random() * 2000) + 500;
     }
 }
 
-// Initialize Live Streams
+// ===== INITIALIZE LIVE STREAMS =====
 function initializeLiveStreams() {
     const streamsGrid = document.getElementById('streamsGrid');
     
-    // Mock live streams data
     const mockStreams = [
         { name: 'سارة', viewers: 234, avatar: '👩' },
         { name: 'أحمد', viewers: 156, avatar: '👨' },
@@ -182,16 +226,14 @@ function initializeLiveStreams() {
     `).join('');
 }
 
-// Join live stream
+// ===== JOIN LIVE STREAM =====
 function joinLiveStream(name) {
-    alert(`🎥 جاري الانضمام إلى بث ${name}...\n\nهذه ميزة تجريبية وستكون متاحة قريباً!`);
+    showNotification(`🎥 جاري الانضمام إلى بث ${name}...`);
 }
 
-// Initialize Call Page
+// ===== INITIALIZE CALL PAGE =====
 function initializeCallPage() {
     const searchBtn = document.getElementById('searchBtn');
-    const nextBtn = document.getElementById('nextBtn');
-    const endCallBtn = document.getElementById('endCallBtn');
     
     if (searchBtn) {
         searchBtn.addEventListener('click', () => {
@@ -199,121 +241,74 @@ function initializeCallPage() {
             simulateMatching();
         });
     }
-    
-    if (nextBtn) {
-        nextBtn.addEventListener('click', () => {
-            simulateMatching();
-        });
-    }
-    
-    if (endCallBtn) {
-        endCallBtn.addEventListener('click', () => {
-            navigateTo('home');
-        });
-    }
-    
-    // Gift button
-    const giftBtn = document.querySelector('.gift-btn');
-    if (giftBtn) {
-        giftBtn.addEventListener('click', showGiftModal);
-    }
-    
-    // Add button
-    const addBtn = document.querySelector('.add-btn');
-    if (addBtn) {
-        addBtn.addEventListener('click', addToContacts);
-    }
 }
 
-// Simulate matching
+// ===== SIMULATE MATCHING =====
 function simulateMatching() {
     const remoteVideo = document.querySelector('.remote-video');
-    remoteVideo.innerHTML = `
-        <div class="video-placeholder">
-            <div class="searching-animation">
-                <div class="search-pulse"></div>
-                <span class="search-text">جاري البحث عن شريك...</span>
-            </div>
-        </div>
+    const callInfo = document.querySelector('.call-info');
+    
+    callInfo.innerHTML = `
+        <div class="search-pulse"></div>
+        <div class="search-text">جاري البحث عن شريك...</div>
     `;
     
-    // Simulate finding a match after 2 seconds
     setTimeout(() => {
-        const mockUsers = [
-            { name: 'سارة', gender: 'female', avatar: '👩' },
-            { name: 'أحمد', gender: 'male', avatar: '👨' },
-            { name: 'ليلى', gender: 'female', avatar: '👩' },
-            { name: 'محمد', gender: 'male', avatar: '👨' },
-            { name: 'نور', gender: 'female', avatar: '👩' }
-        ];
+        const randomUser = MOCK_USERS[Math.floor(Math.random() * MOCK_USERS.length)];
         
-        const randomUser = mockUsers[Math.floor(Math.random() * mockUsers.length)];
+        document.getElementById('callAvatar').textContent = randomUser.avatar;
+        document.getElementById('callName').textContent = randomUser.name;
+        document.querySelector('.call-status').textContent = 'متصل الآن';
         
-        remoteVideo.innerHTML = `
-            <div class="video-placeholder">
-                <div style="font-size: 5rem; margin-bottom: 1rem;">${randomUser.avatar}</div>
-                <div style="font-size: 1.5rem; font-weight: 700; color: white;">${randomUser.name}</div>
-                <div style="font-size: 1rem; color: rgba(255,255,255,0.7); margin-top: 0.5rem;">متصل الآن</div>
-            </div>
+        callInfo.innerHTML = `
+            <div class="call-avatar">${randomUser.avatar}</div>
+            <div class="call-name">${randomUser.name}</div>
+            <div class="call-status">متصل الآن</div>
         `;
     }, 2000);
 }
 
-// Show gift modal
-function showGiftModal() {
-    const gifts = [
-        { name: 'وردة', icon: '🌹', price: 10 },
-        { name: 'قلب', icon: '❤️', price: 20 },
-        { name: 'هدية', icon: '🎁', price: 50 },
-        { name: 'تاج', icon: '👑', price: 100 },
-        { name: 'سيارة', icon: '🚗', price: 500 }
-    ];
+// ===== INITIALIZE GIFTS MODAL =====
+function initializeGiftsModal() {
+    const giftsGrid = document.getElementById('giftsGrid');
     
-    const giftsHtml = gifts.map(gift => `
-        <button onclick="sendGift('${gift.name}', ${gift.price})" 
-                style="padding: 1rem; margin: 0.5rem; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border: none; border-radius: 12px; color: white; cursor: pointer; font-size: 1rem;">
-            <div style="font-size: 2rem; margin-bottom: 0.5rem;">${gift.icon}</div>
-            <div>${gift.name}</div>
-            <div style="font-size: 0.9rem; opacity: 0.9;">${gift.price} كوينز</div>
-        </button>
-    `).join('');
-    
-    const modal = document.createElement('div');
-    modal.className = 'modal active';
-    modal.innerHTML = `
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>إرسال هدية</h2>
-                <button class="modal-close" onclick="this.closest('.modal').remove()">×</button>
-            </div>
-            <div class="modal-body">
-                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem;">
-                    ${giftsHtml}
-                </div>
-            </div>
+    giftsGrid.innerHTML = GIFTS_DATABASE.map((gift, index) => `
+        <div class="gift-item" onclick="sendGift('${gift.name}', ${gift.price})">
+            <div class="gift-icon">${gift.icon}</div>
+            <div class="gift-name">${gift.name}</div>
+            <div class="gift-price">${gift.price} 🪙</div>
         </div>
-    `;
-    document.body.appendChild(modal);
+    `).join('');
 }
 
-// Send gift
+// ===== SHOW GIFT MODAL =====
+function showGiftModal() {
+    const modal = document.getElementById('giftsModal');
+    modal.classList.add('active');
+}
+
+// ===== SEND GIFT =====
 function sendGift(giftName, price) {
     if (AppState.user.balance >= price) {
         AppState.user.balance -= price;
+        
+        AppState.user.transactions.push({
+            type: 'send',
+            title: `إرسال ${giftName}`,
+            amount: -price,
+            date: new Date().toLocaleString('ar-EG')
+        });
+        
         saveUserData();
         updateUI();
-        
-        // Close modal
-        document.querySelector('.modal').remove();
-        
-        // Show success message
+        closeModal('giftsModal');
         showNotification(`تم إرسال ${giftName} بنجاح! 🎉`);
     } else {
-        alert('⚠️ رصيدك غير كافٍ!\n\nيرجى شحن المحفظة للمتابعة.');
+        showNotification('⚠️ رصيدك غير كافٍ!');
     }
 }
 
-// Add to contacts
+// ===== ADD TO CONTACTS =====
 function addToContacts() {
     const mockContact = {
         id: generateUserId(),
@@ -322,11 +317,10 @@ function addToContacts() {
     
     AppState.user.contacts.push(mockContact);
     saveUserData();
-    
     showNotification('✅ تمت إضافة المستخدم إلى جهات الاتصال!');
 }
 
-// Show notification
+// ===== SHOW NOTIFICATION =====
 function showNotification(message) {
     const notification = document.createElement('div');
     notification.style.cssText = `
@@ -351,7 +345,12 @@ function showNotification(message) {
     }, 3000);
 }
 
-// Modal functions
+// ===== MODAL FUNCTIONS =====
+function closeModal(modalId) {
+    const modal = document.getElementById(modalId);
+    modal.classList.remove('active');
+}
+
 function showChargeModal() {
     const modal = document.getElementById('chargeModal');
     modal.classList.add('active');
@@ -362,16 +361,48 @@ function showWithdrawModal() {
     modal.classList.add('active');
 }
 
-function closeModal(modalId) {
-    const modal = document.getElementById(modalId);
-    modal.classList.remove('active');
+// ===== SELECT PACKAGE =====
+function selectPackage(amount, price) {
+    AppState.selectedPackage = { amount, price };
+    showNotification(`✅ تم اختيار الباقة: ${amount} 🪙 بـ ${price}`);
 }
 
-// Copy ID
+// ===== SUBMIT CHARGE REQUEST =====
+function submitChargeRequest() {
+    if (!AppState.selectedPackage) {
+        showNotification('⚠️ يرجى اختيار باقة أولاً');
+        return;
+    }
+    
+    showNotification('📤 تم إرسال طلب الشحن لفريق الدعم!');
+    closeModal('chargeModal');
+    AppState.selectedPackage = null;
+}
+
+// ===== SUBMIT WITHDRAW REQUEST =====
+function submitWithdrawRequest() {
+    const walletInput = document.querySelector('#withdrawModal .modal-input');
+    const walletAddress = walletInput.value.trim();
+    
+    if (!walletAddress) {
+        showNotification('⚠️ يرجى إدخال عنوان المحفظة');
+        return;
+    }
+    
+    if (AppState.user.balance < 500) {
+        showNotification('⚠️ الرصيد غير كافٍ للسحب (الحد الأدنى: 500 كوينز)');
+        return;
+    }
+    
+    showNotification('📤 تم إرسال طلب السحب لفريق الدعم!');
+    closeModal('withdrawModal');
+    walletInput.value = '';
+}
+
+// ===== COPY ID =====
 function copyId() {
     const id = AppState.user.id;
     
-    // Create temporary input
     const tempInput = document.createElement('input');
     tempInput.value = id;
     document.body.appendChild(tempInput);
@@ -382,35 +413,116 @@ function copyId() {
     showNotification('✅ تم نسخ الـ ID بنجاح!');
 }
 
-// Search by ID
-document.addEventListener('DOMContentLoaded', () => {
-    const searchIdBtn = document.querySelector('.search-id-btn');
+// ===== SEARCH BY ID =====
+function searchById() {
     const searchIdInput = document.getElementById('searchIdInput');
+    const searchId = searchIdInput.value.trim();
     
-    if (searchIdBtn && searchIdInput) {
-        searchIdBtn.addEventListener('click', () => {
-            const searchId = searchIdInput.value.trim();
-            if (searchId) {
-                // Mock search result
-                showNotification(`🔍 جاري البحث عن المستخدم: ${searchId}...`);
-                
-                setTimeout(() => {
-                    alert(`تم العثور على المستخدم!\n\nID: ${searchId}\nالاسم: مستخدم تجريبي\n\nهذه ميزة تجريبية.`);
-                }, 1500);
-            }
-        });
+    if (searchId) {
+        showNotification(`🔍 جاري البحث عن المستخدم: ${searchId}...`);
+        
+        setTimeout(() => {
+            showNotification(`✅ تم العثور على المستخدم!`);
+        }, 1500);
     }
-});
+}
 
-// Update online users count every 10 seconds
+// ===== INITIALIZE TRANSACTIONS =====
+function initializeTransactions() {
+    const transactionsList = document.getElementById('transactionsList');
+    
+    if (!transactionsList) return;
+    
+    if (AppState.user.transactions.length === 0) {
+        transactionsList.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-icon">📋</div>
+                <div class="empty-text">لا توجد عمليات بعد</div>
+            </div>
+        `;
+        return;
+    }
+    
+    transactionsList.innerHTML = AppState.user.transactions.map(tx => `
+        <div class="transaction-item">
+            <div class="transaction-icon ${tx.type === 'receive' ? 'receive' : 'send'}">
+                ${tx.type === 'receive' ? '⬇️' : '⬆️'}
+            </div>
+            <div class="transaction-details">
+                <div class="transaction-title">${tx.title}</div>
+                <div class="transaction-date">${tx.date}</div>
+            </div>
+            <div class="transaction-amount ${tx.amount > 0 ? 'positive' : 'negative'}">
+                ${tx.amount > 0 ? '+' : ''}${tx.amount}
+            </div>
+        </div>
+    `).join('');
+}
+
+// ===== LOGOUT =====
+function logout() {
+    localStorage.removeItem('appUser');
+    AppState.isLoggedIn = false;
+    AppState.user = {
+        id: null,
+        name: null,
+        gender: null,
+        balance: 100,
+        contacts: [],
+        transactions: []
+    };
+    navigateTo('login');
+    showNotification('👋 تم تسجيل الخروج بنجاح!');
+}
+
+// ===== UPDATE ONLINE USERS PERIODICALLY =====
 setInterval(() => {
     const onlineUsers = document.getElementById('onlineUsers');
-    if (onlineUsers) {
+    if (onlineUsers && AppState.isLoggedIn) {
         onlineUsers.textContent = Math.floor(Math.random() * 2000) + 500;
     }
 }, 10000);
 
-// Add CSS animation for fadeOut
+// ===== HANDLE CONTACTS PAGE =====
+document.addEventListener('DOMContentLoaded', () => {
+    const contactsList = document.getElementById('contactsList');
+    if (contactsList) {
+        if (AppState.user.contacts.length === 0) {
+            contactsList.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon">👥</div>
+                    <div class="empty-text">لا توجد جهات اتصال</div>
+                    <div class="empty-subtext">ابدأ بإضافة أصدقائك</div>
+                </div>
+            `;
+        } else {
+            contactsList.innerHTML = AppState.user.contacts.map(contact => `
+                <div class="transaction-item">
+                    <div class="transaction-icon receive">👤</div>
+                    <div class="transaction-details">
+                        <div class="transaction-title">${contact.name}</div>
+                        <div class="transaction-date">${contact.id}</div>
+                    </div>
+                    <button class="copy-btn" onclick="copyContactId('${contact.id}')">📋</button>
+                </div>
+            `).join('');
+        }
+    }
+});
+
+// ===== COPY CONTACT ID =====
+function copyContactId(id) {
+    const tempInput = document.createElement('input');
+    tempInput.value = id;
+    document.body.appendChild(tempInput);
+    tempInput.select();
+    document.execCommand('copy');
+    document.body.removeChild(tempInput);
+    
+    showNotification('✅ تم نسخ الـ ID بنجاح!');
+}
+
+// ===== ADD FADE OUT ANIMATION =====
 const style = document.createElement('style');
 style.textContent = `
     @keyframes fadeOut {
