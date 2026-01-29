@@ -75,10 +75,6 @@
                         <span class="user-status online">متصل</span>
                     </div>
                 </div>
-                <div class="coins-display" onclick="navigateTo('wallet')">
-                    <span>💰</span>
-                    <span id="userCoins" class="coin-amount">100</span>
-                </div>
             </header>
 
             <div class="main-content">
@@ -115,15 +111,24 @@
                     <span class="nav-icon">👥</span>
                     <span class="nav-label">جهات الاتصال</span>
                 </button>
-                <button class="nav-btn" data-page="wallet">
-                    <span class="nav-icon">💳</span>
-                    <span class="nav-label">المحفظة</span>
-                </button>
                 <button class="nav-btn" data-page="profile">
                     <span class="nav-icon">👤</span>
                     <span class="nav-label">الملف الشخصي</span>
                 </button>
             </nav>
+
+            <!-- Floating Action Button -->
+            <button class="fab" onclick="toggleFabMenu()" title="فريق الدعم">💬</button>
+            <div class="fab-menu" id="fabMenu">
+                <button class="fab-menu-item" onclick="showChargeModal()">
+                    <span class="fab-menu-icon">⬆️</span>
+                    <span class="fab-menu-text">شحن الرصيد</span>
+                </button>
+                <button class="fab-menu-item" onclick="showExchangeModal()">
+                    <span class="fab-menu-icon">🔄</span>
+                    <span class="fab-menu-text">تبديل الكوكيز</span>
+                </button>
+            </div>
         </div>
     </div>
 
@@ -173,69 +178,24 @@
                     <span class="nav-icon">👥</span>
                     <span class="nav-label">جهات الاتصال</span>
                 </button>
-                <button class="nav-btn" data-page="wallet">
-                    <span class="nav-icon">💳</span>
-                    <span class="nav-label">المحفظة</span>
-                </button>
                 <button class="nav-btn" data-page="profile">
                     <span class="nav-icon">👤</span>
                     <span class="nav-label">الملف الشخصي</span>
                 </button>
             </nav>
-        </div>
-    </div>
 
-    <!-- صفحة المحفظة -->
-    <div id="walletPage" class="page">
-        <div class="wallet-container">
-            <header class="page-header">
-                <button class="back-btn" onclick="history.back()">←</button>
-                <h1 class="page-title">المحفظة</h1>
-                <div style="width: 40px;"></div>
-            </header>
-
-            <div class="balance-card">
-                <div class="balance-label">رصيدك الحالي</div>
-                <div class="balance-amount">
-                    <span class="coin-icon-large">💰</span>
-                    <span id="walletBalance">100</span>
-                </div>
-            </div>
-
-            <div class="wallet-actions">
-                <button class="wallet-btn charge-btn" onclick="showChargeModal()">
-                    <span class="wallet-btn-icon">⬆️</span>
-                    <span class="wallet-btn-text">شحن الرصيد</span>
+            <!-- Floating Action Button -->
+            <button class="fab" onclick="toggleFabMenu()" title="فريق الدعم">💬</button>
+            <div class="fab-menu" id="fabMenu">
+                <button class="fab-menu-item" onclick="showChargeModal()">
+                    <span class="fab-menu-icon">⬆️</span>
+                    <span class="fab-menu-text">شحن الرصيد</span>
                 </button>
-                <button class="wallet-btn withdraw-btn" onclick="showWithdrawModal()">
-                    <span class="wallet-btn-icon">⬇️</span>
-                    <span class="wallet-btn-text">سحب الأرباح</span>
+                <button class="fab-menu-item" onclick="showExchangeModal()">
+                    <span class="fab-menu-icon">🔄</span>
+                    <span class="fab-menu-text">تبديل الكوكيز</span>
                 </button>
             </div>
-
-            <div class="transactions-section">
-                <h3 class="section-title">سجل العمليات</h3>
-                <div class="transactions-list" id="transactionsList"></div>
-            </div>
-
-            <nav class="bottom-nav">
-                <button class="nav-btn" data-page="home">
-                    <span class="nav-icon">🏠</span>
-                    <span class="nav-label">الرئيسية</span>
-                </button>
-                <button class="nav-btn" data-page="contacts">
-                    <span class="nav-icon">👥</span>
-                    <span class="nav-label">جهات الاتصال</span>
-                </button>
-                <button class="nav-btn active" data-page="wallet">
-                    <span class="nav-icon">💳</span>
-                    <span class="nav-label">المحفظة</span>
-                </button>
-                <button class="nav-btn" data-page="profile">
-                    <span class="nav-icon">👤</span>
-                    <span class="nav-label">الملف الشخصي</span>
-                </button>
-            </nav>
         </div>
     </div>
 
@@ -264,15 +224,24 @@
                     <span class="nav-icon">👥</span>
                     <span class="nav-label">جهات الاتصال</span>
                 </button>
-                <button class="nav-btn" data-page="wallet">
-                    <span class="nav-icon">💳</span>
-                    <span class="nav-label">المحفظة</span>
-                </button>
                 <button class="nav-btn" data-page="profile">
                     <span class="nav-icon">👤</span>
                     <span class="nav-label">الملف الشخصي</span>
                 </button>
             </nav>
+
+            <!-- Floating Action Button -->
+            <button class="fab" onclick="toggleFabMenu()" title="فريق الدعم">💬</button>
+            <div class="fab-menu" id="fabMenu">
+                <button class="fab-menu-item" onclick="showChargeModal()">
+                    <span class="fab-menu-icon">⬆️</span>
+                    <span class="fab-menu-text">شحن الرصيد</span>
+                </button>
+                <button class="fab-menu-item" onclick="showExchangeModal()">
+                    <span class="fab-menu-icon">🔄</span>
+                    <span class="fab-menu-text">تبديل الكوكيز</span>
+                </button>
+            </div>
         </div>
     </div>
 
@@ -294,6 +263,15 @@
                     <span class="id-label">الـ ID:</span>
                     <span class="id-value" id="profileId">XXXXX</span>
                     <button class="copy-btn" onclick="copyId()">📋</button>
+                </div>
+            </div>
+
+            <!-- Balance Card -->
+            <div class="balance-card" style="margin: 2rem 1rem;">
+                <div class="balance-label">رصيدك الحالي</div>
+                <div class="balance-amount">
+                    <span class="coin-icon-large">💰</span>
+                    <span id="profileBalance">100</span>
                 </div>
             </div>
 
@@ -340,15 +318,24 @@
                     <span class="nav-icon">👥</span>
                     <span class="nav-label">جهات الاتصال</span>
                 </button>
-                <button class="nav-btn" data-page="wallet">
-                    <span class="nav-icon">💳</span>
-                    <span class="nav-label">المحفظة</span>
-                </button>
                 <button class="nav-btn active" data-page="profile">
                     <span class="nav-icon">👤</span>
                     <span class="nav-label">الملف الشخصي</span>
                 </button>
             </nav>
+
+            <!-- Floating Action Button -->
+            <button class="fab" onclick="toggleFabMenu()" title="فريق الدعم">💬</button>
+            <div class="fab-menu" id="fabMenu">
+                <button class="fab-menu-item" onclick="showChargeModal()">
+                    <span class="fab-menu-icon">⬆️</span>
+                    <span class="fab-menu-text">شحن الرصيد</span>
+                </button>
+                <button class="fab-menu-item" onclick="showExchangeModal()">
+                    <span class="fab-menu-icon">🔄</span>
+                    <span class="fab-menu-text">تبديل الكوكيز</span>
+                </button>
+            </div>
         </div>
     </div>
 
@@ -418,18 +405,20 @@
         </div>
     </div>
 
-    <!-- Modal للسحب -->
-    <div id="withdrawModal" class="modal">
+    <!-- Modal لتبديل الكوكيز -->
+    <div id="exchangeModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>سحب الأرباح</h2>
-                <button class="modal-close" onclick="closeModal('withdrawModal')">×</button>
+                <h2>تبديل الكوكيز</h2>
+                <button class="modal-close" onclick="closeModal('exchangeModal')">×</button>
             </div>
             <div class="modal-body">
-                <div class="modal-text">أدخل عنوان محفظتك:</div>
-                <input type="text" class="modal-input" placeholder="عنوان المحفظة (Wallet Address)">
-                <div class="modal-text small">الحد الأدنى للسحب: 500 كوينز</div>
-                <button class="modal-btn" onclick="submitWithdrawRequest()">إرسال طلب السحب</button>
+                <div class="modal-text">حول أرباحك إلى عملات حقيقية</div>
+                <div class="modal-input-group">
+                    <input type="number" class="modal-input" id="exchangeAmount" placeholder="عدد الكوكيز" min="500">
+                    <div class="modal-text small">الحد الأدنى: 500 كوكيز</div>
+                </div>
+                <button class="modal-btn" onclick="submitExchangeRequest()">طلب التبديل</button>
             </div>
         </div>
     </div>

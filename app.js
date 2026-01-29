@@ -9,7 +9,8 @@ const AppState = {
         transactions: []
     },
     isLoggedIn: false,
-    selectedPackage: null
+    selectedPackage: null,
+    fabMenuOpen: false
 };
 
 // ===== GIFTS DATABASE =====
@@ -57,7 +58,34 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeGiftsModal();
     initializeTransactions();
     setupBackButton();
+    setupFabMenuCloser();
 });
+
+// ===== SETUP FAB MENU CLOSER =====
+function setupFabMenuCloser() {
+    document.addEventListener('click', (e) => {
+        const fab = document.querySelector('.fab');
+        const fabMenu = document.getElementById('fabMenu');
+        
+        if (fab && fabMenu && !fab.contains(e.target) && !fabMenu.contains(e.target)) {
+            fabMenu.classList.remove('active');
+            AppState.fabMenuOpen = false;
+        }
+    });
+}
+
+// ===== TOGGLE FAB MENU =====
+function toggleFabMenu() {
+    const fabMenu = document.getElementById('fabMenu');
+    if (!fabMenu) return;
+    
+    AppState.fabMenuOpen = !AppState.fabMenuOpen;
+    if (AppState.fabMenuOpen) {
+        fabMenu.classList.add('active');
+    } else {
+        fabMenu.classList.remove('active');
+    }
+}
 
 // ===== BACK BUTTON SUPPORT =====
 function setupBackButton() {
@@ -142,7 +170,8 @@ function initializeNavigation() {
             const page = btn.dataset.page;
             navigateTo(page);
             
-            navButtons.forEach(b => b.classList.remove('active'));
+            const allNavButtons = document.querySelectorAll('.nav-btn');
+            allNavButtons.forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
         });
     });
@@ -166,6 +195,13 @@ function navigateTo(pageName) {
                 btn.classList.remove('active');
             }
         });
+        
+        // Close FAB menu when navigating
+        const fabMenu = document.getElementById('fabMenu');
+        if (fabMenu) {
+            fabMenu.classList.remove('active');
+            AppState.fabMenuOpen = false;
+        }
     }
 }
 
@@ -183,12 +219,16 @@ function updateUI() {
         el.textContent = AppState.user.name.charAt(0).toUpperCase();
     });
     
-    const balanceElements = document.querySelectorAll('#userCoins, #walletBalance');
+    const balanceElements = document.querySelectorAll('#profileBalance, #modalUserId');
     balanceElements.forEach(el => {
-        el.textContent = AppState.user.balance;
+        if (el.id === 'profileBalance') {
+            el.textContent = AppState.user.balance;
+        } else if (el.id === 'modalUserId') {
+            el.textContent = AppState.user.id;
+        }
     });
     
-    const idElements = document.querySelectorAll('#profileId, #modalUserId');
+    const idElements = document.querySelectorAll('#profileId');
     idElements.forEach(el => {
         el.textContent = AppState.user.id;
     });
@@ -202,6 +242,7 @@ function updateUI() {
 // ===== INITIALIZE LIVE STREAMS =====
 function initializeLiveStreams() {
     const streamsGrid = document.getElementById('streamsGrid');
+    if (!streamsGrid) return;
     
     const mockStreams = [
         { name: 'سارة', viewers: 234, avatar: '👩' },
@@ -245,7 +286,6 @@ function initializeCallPage() {
 
 // ===== SIMULATE MATCHING =====
 function simulateMatching() {
-    const remoteVideo = document.querySelector('.remote-video');
     const callInfo = document.querySelector('.call-info');
     
     callInfo.innerHTML = `
@@ -271,6 +311,7 @@ function simulateMatching() {
 // ===== INITIALIZE GIFTS MODAL =====
 function initializeGiftsModal() {
     const giftsGrid = document.getElementById('giftsGrid');
+    if (!giftsGrid) return;
     
     giftsGrid.innerHTML = GIFTS_DATABASE.map((gift, index) => `
         <div class="gift-item" onclick="sendGift('${gift.name}', ${gift.price})">
@@ -354,11 +395,21 @@ function closeModal(modalId) {
 function showChargeModal() {
     const modal = document.getElementById('chargeModal');
     modal.classList.add('active');
+    const fabMenu = document.getElementById('fabMenu');
+    if (fabMenu) {
+        fabMenu.classList.remove('active');
+        AppState.fabMenuOpen = false;
+    }
 }
 
-function showWithdrawModal() {
-    const modal = document.getElementById('withdrawModal');
+function showExchangeModal() {
+    const modal = document.getElementById('exchangeModal');
     modal.classList.add('active');
+    const fabMenu = document.getElementById('fabMenu');
+    if (fabMenu) {
+        fabMenu.classList.remove('active');
+        AppState.fabMenuOpen = false;
+    }
 }
 
 // ===== SELECT PACKAGE =====
@@ -379,24 +430,24 @@ function submitChargeRequest() {
     AppState.selectedPackage = null;
 }
 
-// ===== SUBMIT WITHDRAW REQUEST =====
-function submitWithdrawRequest() {
-    const walletInput = document.querySelector('#withdrawModal .modal-input');
-    const walletAddress = walletInput.value.trim();
+// ===== SUBMIT EXCHANGE REQUEST =====
+function submitExchangeRequest() {
+    const exchangeInput = document.getElementById('exchangeAmount');
+    const amount = parseInt(exchangeInput.value);
     
-    if (!walletAddress) {
-        showNotification('⚠️ يرجى إدخال عنوان المحفظة');
+    if (!amount || amount < 500) {
+        showNotification('⚠️ الحد الأدنى للتبديل: 500 كوكيز');
         return;
     }
     
-    if (AppState.user.balance < 500) {
-        showNotification('⚠️ الرصيد غير كافٍ للسحب (الحد الأدنى: 500 كوينز)');
+    if (AppState.user.balance < amount) {
+        showNotification('⚠️ رصيدك غير كافٍ!');
         return;
     }
     
-    showNotification('📤 تم إرسال طلب السحب لفريق الدعم!');
-    closeModal('withdrawModal');
-    walletInput.value = '';
+    showNotification('📤 تم إرسال طلب التبديل لفريق الدعم!');
+    closeModal('exchangeModal');
+    exchangeInput.value = '';
 }
 
 // ===== COPY ID =====
@@ -528,6 +579,10 @@ style.textContent = `
     @keyframes fadeOut {
         from { opacity: 1; transform: translateX(-50%) translateY(0); }
         to { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+    }
+    @keyframes slideInUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
     }
 `;
 document.head.appendChild(style);
