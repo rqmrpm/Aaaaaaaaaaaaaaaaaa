@@ -370,8 +370,32 @@ function initializeCallPage() {
     }
 }
 
+// ===== CAMERA & AUDIO PERMISSIONS =====
+async function setupLocalVideo() {
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        const localVideoPlaceholder = document.querySelector('.video-placeholder-small');
+        if (localVideoPlaceholder) {
+            localVideoPlaceholder.innerHTML = '<video id="localVideoElement" autoplay muted playsinline style="width:100%; height:100%; object-fit:cover; border-radius:12px;"></video>';
+            const videoElement = document.getElementById('localVideoElement');
+            videoElement.srcObject = stream;
+        }
+        return stream;
+    } catch (error) {
+        console.error('Error accessing media devices:', error);
+        showNotification('⚠️ يرجى السماح بالوصول للكاميرا والمايك للمتابعة');
+        return null;
+    }
+}
+
 // ===== SIMULATE MATCHING =====
-function simulateMatching() {
+async function simulateMatching() {
+    const stream = await setupLocalVideo();
+    if (!stream) {
+        navigateTo('home');
+        return;
+    }
+
     const callInfo = document.querySelector('.call-info');
     
     callInfo.innerHTML = `
@@ -476,6 +500,16 @@ function showNotification(message) {
 function closeModal(modalId) {
     const modal = document.getElementById(modalId);
     modal.classList.remove('active');
+}
+
+function endCall() {
+    const videoElement = document.getElementById('localVideoElement');
+    if (videoElement && videoElement.srcObject) {
+        const tracks = videoElement.srcObject.getTracks();
+        tracks.forEach(track => track.stop());
+    }
+    navigateTo('home');
+    showNotification('📞 تم إنهاء المكالمة');
 }
 
 function showChargeModal() {
